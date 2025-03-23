@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package protoproxy;
+
+option go_package = "github.com/bitcrshr/protoproxy/types/protoproxypb";
+
+import "google/rpc/code.proto";
+
+message StatusMapping {
+  int32 http_status_code = 1;  
+  google.rpc.Code grpc_status_code = 2;
+}
+
+enum TextCase {
+  TEXT_CASE_UNSPECIFIED = 0;
+
+  // camelCase
+  CAMEL = 1;
+
+  // PascalCase
+  PASCAL = 2;
+
+  // kebab-case
+  KEBAB = 3;
+
+  // snake_case
+  SNAKE = 4;
+
+  // SCREAMING_SNAKE_CASE
+  SCREAMING_SNAKE = 5;
+
+  // SCREAMING-KEBAB-CASE
+  SCREAMING_KEBAB = 6;
+
+  // lowercase
+  LOWER = 7;
+
+  // UPPERCASE
+  UPPER = 8;
+}
+
+enum Encoding {
+  ENCODING_UNSPECIFIED = 0;
+  JSON = 1;
+  URL_ENCODED_FORM_VALUES = 2;
+}
+
+enum Scheme {
+  SCHEME_UNSPECIFIED = 0;
+  HTTP = 1;
+  HTTPS = 2;
+}

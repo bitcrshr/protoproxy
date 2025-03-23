@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package pathmap_test;
+
+message TestMessage {
+  double double = 1;
+  repeated double doubles = 2;
+
+  float float = 3;
+  repeated float floats = 4;
+
+  int32 i32 = 5;
+  repeated int32 i32s = 6;
+
+  uint32 u32 = 7;
+  repeated uint32 u32s = 8;
+
+  sint32 s32 = 9;
+  repeated sint32 s32s = 10;
+
+  sint64 s64 = 11;
+  repeated sint64 s64s = 12;
+
+  fixed32 fixed32 = 13;
+  repeated fixed32 fixed32s = 14;
+
+  fixed64 fixed64 = 15;
+  repeated fixed64 fixed64s = 16;
+
+  sfixed32 sf32 = 17;
+  repeated sfixed32 sf32s = 18;
+
+  sfixed64 sf64 = 19;
+  repeated sfixed64 sf64s = 20;
+
+  bool bool = 21;
+  repeated bool bools = 22;
+
+  string string = 23;
+  repeated string strings = 24;
+
+  bytes bytes = 25;
+  repeated bytes bytesbytes = 26;
+
+  Inner message = 27;
+  repeated Inner messages = 28;
+
+  map<string, Inner> msg_map = 29;
+  map<string, bool> primitive_map = 30;
+
+  FooEnum enum = 31;
+  repeated FooEnum enums = 32;
+}
+
+message Inner {
+  repeated string foo = 1;
+}
+
+enum FooEnum {
+  FOO_ENUM_UNSPECIFIED = 0;
+  BAR = 1;
+}

@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+import "protoproxypb/options.proto";
+import "google/api/annotations.proto";
+
+package test.v1;
+
+option (protoproxy.file).text_case = SCREAMING_SNAKE;
+
+option go_package = "github.com/bitcrshr/protoproxy/types/test;testpb";
+
+message TestRequest {
+  option (protoproxy.message).text_case = CAMEL;
+
+  string field_uno = 1 [(protoproxy.field).as_header = true];
+  string field_dos = 2 [(protoproxy.field).text_case = KEBAB];
+  Foobar foobar_enum_yay = 3;
+}
+
+enum Foobar {
+  FOOBAR_UNSPECIFIED = 0;
+  FOO = 1;
+  BAR = 2;
+}
+
+message AnothaRequest {
+  
+}
+
+message AnothaResponse {
+  repeated string woohoos = 1 [(protoproxy.field).flatten = true];
+}
+
+message TestResponse {
+  string bar = 1;
+}
+
+service TestService {
+  rpc TestMethod(TestRequest) returns (TestResponse) {
+    option (google.api.http) = {
+      post: "/test/{id}"
+      body: "*"
+    };
+  }
+
+  rpc AnothaOne(AnothaRequest) returns (AnothaResponse) {
+    option (google.api.http) = {
+      delete: "/test"
+    };
+  }
+}
+

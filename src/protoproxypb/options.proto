@@ -1,0 +1,184 @@
+syntax = "proto3";
+
+package protoproxy;
+
+option go_package = "github.com/bitcrshr/protoproxy/types/protoproxypb";
+
+import "google/protobuf/descriptor.proto";
+import "protoproxypb/common.proto";
+
+
+extend google.protobuf.FileOptions {
+  FileOptions file = 50000;
+}
+
+extend google.protobuf.MessageOptions {
+  MessageOptions message = 50000;
+}
+
+extend google.protobuf.FieldOptions {
+  FieldOptions field = 50000;
+}
+
+extend google.protobuf.OneofOptions {
+  OneofOptions oneof = 50000;  
+}
+
+extend google.protobuf.EnumOptions {
+  EnumOptions enum = 50000;
+}
+
+extend google.protobuf.EnumValueOptions {
+  EnumValueOptions enum_value = 50000;
+}
+
+extend google.protobuf.ServiceOptions {
+  ServiceOptions service = 50000; 
+}
+
+extend google.protobuf.MethodOptions {
+  MethodOptions method = 50000;
+}
+
+message FileOptions {
+  // If set, instructs ProtoProxy to encode/decode all fields and enum values
+  // in this file in the given text case.
+  //
+  // Can be overridden at lower scopes.
+  TextCase text_case = 1;
+}
+
+message MessageOptions {
+  // If set, instructs ProtoProxy to encode/decode all fields in this
+  // message in the given text case.
+  //
+  // Can be overridden at lower scopes.
+  TextCase text_case = 1;
+}
+
+message FieldOptions {
+  // If true, instructs ProtoProxy to encode/decode this field as an
+  // anonymous value. In other words, denotes that the field's name is
+  // only useful for the gRPC service, and will not be considered when
+  // translating HTTP requests/responses.
+  //
+  // Must be the only field in the message, otherwise an error will be thrown
+  // by protoc-gen-protoproxy.
+  //
+  // Example:
+  //
+  // ```proto
+  // message Foo {
+  //   repeated string bar = 1 [(protoproxy.opt.flatten) = true];
+  // }
+  // ```
+  //
+  // Will be encoded in JSON as:
+  //
+  // ```json
+  // ["a", "b", "c", "d"]
+  // ```
+  // 
+  bool flatten = 1;
+
+  // If set, instructs ProtoProxy to encode/decode this field as the given
+  // string.
+  //
+  // Takes precedence over `text_case` if set on the same field.
+  optional string name = 2;
+
+  // If set, instructs ProtoProxy to encode/decode this field in the given
+  // text case.
+  TextCase text_case = 3;
+
+  // If true, instructs ProtoProxy to encode/decode this field as an HTTP header.
+  bool as_header = 4;
+
+  // If true, instructs ProtoProxy to encode this field as a path parameter
+  // in the request URL. Has no effect on responses.
+  //
+  // Note that this is unnec
+  bool as_path_parameter = 5;
+
+  // If true, instructs ProtoProxy to encode this field as a query parameter
+  // in the request URL. Has no effect on responses.
+  bool as_query_parameter = 6;
+
+  // If true, instructs ProtoProxy to not encode/decode this field in the HTTP body.
+  bool omit_from_body = 7;
+}
+
+message OneofOptions {}
+
+message EnumOptions {
+  // If set, instructs ProtoProxy to encode/decode all values in the given
+  // text case.
+  //
+  // Can be overridden at lower scopes.
+  TextCase text_case = 1;
+}
+
+message EnumValueOptions {
+  // If set, instructs ProtoProxy to encode/decode this enum value in the given
+  // text case.
+  TextCase text_case = 1;
+
+  // If set, instructs ProtoProxy to encode/decode this enum value as the given
+  // string.
+  //
+  // Takes precedence over `text_case` if set on the same field.
+  optional string name = 2;
+}
+
+message ServiceOptions {
+  Scheme scheme = 1;
+  string domain = 2;
+
+  // If set, instructs ProtoProxy to forward these headers from the gRPC metadata
+  // as headers in the HTTP request.
+  //
+  // Applies to all methods in the service, unless overridden at the method level.
+  repeated string forwarded_request_headers = 3;
+
+  // If set, instructs ProtoProxy to forward these headers from the HTTP response
+  // as metadata in the gRPC response. 
+  //
+  // Applies to all methods in the service, unless overridden at the method level.
+  repeated string forwarded_response_headers = 4;
+}
+
+message MethodOptions {
+  // If set, instructs ProtoProxy to convert each given HTTP status code to
+  // the given gRPC status code.
+  //
+  // Default behavior is:
+  //
+  // 2xx -> OK
+  // 4xx -> INVALID_ARGUMENT
+  // 5xx -> INTERNAL
+  repeated StatusMapping status_mappings = 1;
+
+  // If set, instructs ProtoProxy to use the given encoding to marshal the request.
+  //
+  // Leaving unset or setting to `ENCODING_UNSPECIFIED` is equivalent to setting
+  // to `JSON`.
+  Encoding request_encoding = 2;
+
+  // If set, instructs ProtoProxy to use the given encoding to unmarshal the response.
+  //
+  // Leaving unset or setting to `ENCODING_UNSPECIFIED` is equivalent to setting
+  // to `JSON`.
+  Encoding response_encoding = 3;
+
+  // If set, instructs ProtoProxy to forward these headers from the gRPC metadata
+  // as headers in the HTTP request. Overrides the `forwarded_request_headers` service
+  // option. 
+  repeated string forwarded_request_headers = 4;
+
+  // If set, instructs ProtoProxy to forward these headers from the HTTP response
+  // as metadata in the gRPC response. Overrides the `forwarded_response_headers` service
+  // option. 
+  repeated string forwarded_response_headers = 5;
+}
+
+
